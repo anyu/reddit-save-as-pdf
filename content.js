@@ -1,3 +1,11 @@
+function addScript(url) {
+  var script = document.createElement('script');
+  script.type = 'application/javascript';
+  script.src = url;
+  document.head.appendChild(script);
+}
+
+
 function checkShadowDomLoadedForAllComments(selector, intervalId) {
   const commentElements = document.querySelectorAll(selector);
 
@@ -69,3 +77,6 @@ window.addEventListener("load", () => {
   const commentSelector = 'shreddit-comment-action-row[slot="actionRow"]';
   const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(commentSelector, intervalId), 100);
 });
+
+
+addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
