@@ -1,11 +1,13 @@
-function checkShadowDomLoaded(selector, intervalId) {
-  const shadowHost = document.querySelector(selector);
-  
-  if (shadowHost && shadowHost.shadowRoot) {
-    clearInterval(intervalId);
-    console.log(`${selector}'s Shadow DOM has loaded.`);
-    addSaveAsPdfButton(shadowHost)
-  }
+function checkShadowDomLoadedForAllComments(selector, intervalId) {
+  const commentElements = document.querySelectorAll(selector);
+
+  commentElements.forEach((commentElement) => {
+    if (commentElement.shadowRoot) {
+      clearInterval(intervalId);
+      console.log(`Shadow DOM for comment '${commentElement}' has loaded.`);
+      addSaveAsPdfButton(commentElement);
+    }
+  });
 }
 
 function addSaveAsPdfButton(shadowHost) {
@@ -32,9 +34,21 @@ function addSaveAsPdfButton(shadowHost) {
           saveAsPdfButton.id = "saveAsPdfButton";
           saveAsPdfButton.slot = "comment-save-as-pdf"
 
-          saveAsPdfButton.style.paddingLeft = "15px";
-          saveAsPdfButton.style.paddingRight = "15px";
-          saveAsPdfButton.style.borderRadius = "5px";
+          const shareButtonStyles = getComputedStyle(shareButton);
+
+          saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+          saveAsPdfButton.style.color = shareButtonStyles.color;
+
+          saveAsPdfButton.addEventListener("mouseover", () => {
+            saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+            saveAsPdfButton.style.color = shareButtonStyles.color;
+          });
+
+          saveAsPdfButton.addEventListener("mouseout", () => {
+            saveAsPdfButton.style.backgroundColor = "";
+            saveAsPdfButton.style.color = "";
+          });
+
   
           saveAsPdfButton.addEventListener("click", () => {
             console.log("save button clicked");
@@ -53,5 +67,5 @@ function addSaveAsPdfButton(shadowHost) {
 // Run function on page load
 window.addEventListener("load", () => {
   const commentSelector = 'shreddit-comment-action-row[slot="actionRow"]';
-  const intervalId = setInterval(() => checkShadowDomLoaded(commentSelector, intervalId), 100);
+  const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(commentSelector, intervalId), 100);
 });
