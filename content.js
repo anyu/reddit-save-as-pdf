@@ -1,76 +1,57 @@
-function getShadowRoot(element) {
-  const chrome = window.chrome;
-  console.log("chrome", chrome)
-  try {
-    if (chrome.dom && chrome.dom.openOrClosedShadowRoot && element) {
-      return element.openOrClosedShadowRoot;
-    }
-  } catch (error) {
-    console.log("error", error)
-    return null;
+function checkShadowDomLoaded(selector, intervalId) {
+  const shadowHost = document.querySelector(selector);
+  
+  if (shadowHost && shadowHost.shadowRoot) {
+    clearInterval(intervalId);
+    console.log(`${selector}'s Shadow DOM has loaded.`);
+    addSaveAsPdfButton(shadowHost)
   }
 }
 
-function addSaveAsPdfButton() {
-  const commentActionRow = document.querySelector(
-    'shreddit-comment-action-row[slot="actionRow"]'
-  );
-  console.log("commentActionRow", commentActionRow)
-
-  // if (commentActionRow) {
-  //   console.log("shadowroot", commentActionRow.shadowRoot)
-
-  //   // const shadowRoot = getShadowRoot(commentActionRow);
-  //   const results = commentActionRow.shadowRoot.querySelectorAll('*')
-  //   console.log("results", results)
-  // }
-
-  // const shadowRoot = getShadowRoot(commentActionRow);
-
-    // Find the <slot> element within the Shadow DOM
-    // const commentShareSlot = shadowRoot.querySelector('slot[name="comment-share"]');
-
-    // console.log("commentShareSlot", commentShareSlot)
-
-    // if (commentShareSlot) {
-    //   console.log("commentShareSlot found", commentShareSlot)
-    // }
-
-    // if (commentShareSlot && commentActionRow) {
-      // console.log("BOTH HERE")
-      // create and insert <slot name="comment-save-as-pdf"></slot> after share slot
-      // const commentSaveAsPdfSlot = document.createElement('slot');
-      // commentSaveAsPdfSlot.setAttribute('name', 'comment-save-as-pdf');
-
-      // const parentElement = commentShareSlot.parentElement;
-      // parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
-
-      const shareButton = commentActionRow.querySelector(
-        'shreddit-comment-share-button'
+function addSaveAsPdfButton(shadowHost) {
+      // Find the <slot> element within the Shadow DOM
+      const commentShareSlot = shadowHost.shadowRoot.querySelector(
+        'slot[name="comment-share"]'
       );
-      
-      if (shareButton) {  
-        console.log("shareButton")
+      if (commentShareSlot) {
+        // create and insert <slot name="comment-save-as-pdf"></slot> after share slot
+        const commentSaveAsPdfSlot = document.createElement('slot');
+        commentSaveAsPdfSlot.setAttribute('name', 'comment-save-as-pdf');
 
-        // create and insert save as pdf button
-        const saveAsPdfButton = document.createElement("button");
-        saveAsPdfButton.textContent = "Save as PDF";
-        saveAsPdfButton.id = "saveAsPdfButton";
-        saveAsPdfButton.slot = "comment-save-as-pdf"
-    
-        saveAsPdfButton.addEventListener("click", () => {
-          console.log("save button clicked");
-          // TODO: Add PDF generation logic (jsPDF?)
-        });
-    
-        // Insert "Save as PDF" to the right of "Share"
-        shareButton.parentNode.insertBefore(
-          saveAsPdfButton,
-          shareButton.nextSibling.nextSibling
+        const parentElement = commentShareSlot.parentElement;
+        parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
+
+        const shareButton = shadowHost.querySelector(
+          'shreddit-comment-share-button'
         );
+        
+        if (shareButton) {  
+          // create and insert save as pdf button
+          const saveAsPdfButton = document.createElement("button");
+          saveAsPdfButton.textContent = "Save as PDF";
+          saveAsPdfButton.id = "saveAsPdfButton";
+          saveAsPdfButton.slot = "comment-save-as-pdf"
+
+          saveAsPdfButton.style.paddingLeft = "15px";
+          saveAsPdfButton.style.paddingRight = "15px";
+          saveAsPdfButton.style.borderRadius = "5px";
+  
+          saveAsPdfButton.addEventListener("click", () => {
+            console.log("save button clicked");
+            // TODO: Add PDF generation logic (jsPDF?)
+          });
+      
+          // Insert "Save as PDF" to the right of "Share"
+          shareButton.parentNode.insertBefore(
+            saveAsPdfButton,
+            shareButton.nextSibling.nextSibling
+          );
+        }
       }
-    // }
 }
 
 // Run function on page load
-window.addEventListener("load", addSaveAsPdfButton);
+window.addEventListener("load", () => {
+  const commentSelector = 'shreddit-comment-action-row[slot="actionRow"]';
+  const intervalId = setInterval(() => checkShadowDomLoaded(commentSelector, intervalId), 100);
+});
