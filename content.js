@@ -78,5 +78,5 @@ window.addEventListener("load", () => {
   const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(commentSelector, intervalId), 100);
 });
 
-
-addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+// TODO: Figure out CSP
+// addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
