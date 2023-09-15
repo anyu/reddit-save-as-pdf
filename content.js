@@ -17,40 +17,33 @@ function addSaveAsPdfButton() {
   );
   console.log("commentActionRow", commentActionRow)
 
-  if (commentActionRow) {
-    console.log("shadowroot", commentActionRow.shadowRoot)
+  // if (commentActionRow) {
+  //   console.log("shadowroot", commentActionRow.shadowRoot)
 
-    // const shadowRoot = getShadowRoot(commentActionRow);
-    const results = commentActionRow.shadowRoot.querySelectorAll('*')
-    console.log("results", results)
-  }
+  //   // const shadowRoot = getShadowRoot(commentActionRow);
+  //   const results = commentActionRow.shadowRoot.querySelectorAll('*')
+  //   console.log("results", results)
+  // }
 
+  // const shadowRoot = getShadowRoot(commentActionRow);
 
-  if (commentActionRow.when) {
-    const shadowRoot = getShadowRoot(commentActionRow);
-    console.log("shadowRoot", shadowRoot)
-  }
-
-  if (shadowRoot) {
-    const sr = shadowRoot.querySelectorAll('*')
-    console.log("sr", sr)
     // Find the <slot> element within the Shadow DOM
-    const commentShareSlot = shadowRoot.querySelector('slot[name="comment-share"]');
+    // const commentShareSlot = shadowRoot.querySelector('slot[name="comment-share"]');
 
-    console.log("commentShareSlot", commentShareSlot)
+    // console.log("commentShareSlot", commentShareSlot)
 
-    if (commentShareSlot) {
-      console.log("commentShareSlot found", commentShareSlot)
-    }
+    // if (commentShareSlot) {
+    //   console.log("commentShareSlot found", commentShareSlot)
+    // }
 
-    if (commentShareSlot && commentActionRow) {
-      console.log("BOTH HERE")
+    // if (commentShareSlot && commentActionRow) {
+      // console.log("BOTH HERE")
       // create and insert <slot name="comment-save-as-pdf"></slot> after share slot
-      const commentSaveAsPdfSlot = document.createElement('slot');
-      commentSaveAsPdfSlot.setAttribute('name', 'comment-save-as-pdf');
+      // const commentSaveAsPdfSlot = document.createElement('slot');
+      // commentSaveAsPdfSlot.setAttribute('name', 'comment-save-as-pdf');
 
-      const parentElement = commentShareSlot.parentElement;
-      parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
+      // const parentElement = commentShareSlot.parentElement;
+      // parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
 
       const shareButton = commentActionRow.querySelector(
         'shreddit-comment-share-button'
@@ -76,8 +69,7 @@ function addSaveAsPdfButton() {
           shareButton.nextSibling.nextSibling
         );
       }
-    }
-  }
+    // }
 }
 
 // Run function on page load
