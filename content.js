@@ -59,9 +59,11 @@ function addSaveAsPdfButton(shadowHost) {
 
   
           saveAsPdfButton.addEventListener("click", () => {
-            // TODO: Grab specific comment, not just first
-            var element = document.getElementById('-post-rtjson-content');
-            handlePdfClick(element);
+            const parentComment = shadowHost.parentElement;
+            if (parentComment) {
+              var commentContent = parentComment.querySelector('#-post-rtjson-content');
+            }
+            handlePdfClick(commentContent);
           });
       
           // Insert "Save as PDF" to the right of "Share"
