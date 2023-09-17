@@ -59,8 +59,9 @@ function addSaveAsPdfButton(shadowHost) {
 
   
           saveAsPdfButton.addEventListener("click", () => {
-            console.log("save button clicked");
-            // TODO: Add PDF generation logic (jsPDF?)
+            // TODO: Grab specific comment, not just first
+            var element = document.getElementById('-post-rtjson-content');
+            handlePdfClick(element);
           });
       
           // Insert "Save as PDF" to the right of "Share"
@@ -72,11 +73,17 @@ function addSaveAsPdfButton(shadowHost) {
       }
 }
 
+const handlePdfClick = async (e) => {
+  var opt = {
+    margin:       1,
+    filename:     'reddit-comment.pdf',
+  };
+    e.style.color='black'
+    html2pdf().set(opt).from(e).save();
+}
+
 // Run function on page load
 window.addEventListener("load", () => {
   const commentSelector = 'shreddit-comment-action-row[slot="actionRow"]';
   const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(commentSelector, intervalId), 100);
 });
-
-// TODO: Figure out CSP
-// addScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
