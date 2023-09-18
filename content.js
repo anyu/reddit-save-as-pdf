@@ -1,11 +1,9 @@
-function addScript(url) {
-  var script = document.createElement('script');
-  script.type = 'application/javascript';
-  script.src = url;
-  document.head.appendChild(script);
-}
+const COMMENT_SELECTOR = 'shreddit-comment-action-row[slot="actionRow"]';
+const COMMENT_SHARE_SLOT_SELECTOR = 'slot[name="comment-share"]';
+const COMMENT_CONTENT_SELECTOR = '#-post-rtjson-content';
+const COMMENT_SHARE_BUTTON_SELECTOR = 'shreddit-comment-share-button';
 
-
+// Finds all comment elements and adds the Save as PDF button to each
 function checkShadowDomLoadedForAllComments(selector, intervalId) {
   const commentElements = document.querySelectorAll(selector);
 
@@ -20,9 +18,7 @@ function checkShadowDomLoadedForAllComments(selector, intervalId) {
 
 function addSaveAsPdfButton(shadowHost) {
       // Find the <slot> element within the Shadow DOM
-      const commentShareSlot = shadowHost.shadowRoot.querySelector(
-        'slot[name="comment-share"]'
-      );
+      const commentShareSlot = shadowHost.shadowRoot.querySelector(COMMENT_SHARE_SLOT_SELECTOR);
       if (commentShareSlot) {
         // create and insert <slot name="comment-save-as-pdf"></slot> after share slot
         const commentSaveAsPdfSlot = document.createElement('slot');
@@ -32,7 +28,7 @@ function addSaveAsPdfButton(shadowHost) {
         parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
 
         const shareButton = shadowHost.querySelector(
-          'shreddit-comment-share-button'
+          COMMENT_SHARE_BUTTON_SELECTOR
         );
         
         if (shareButton) {  
@@ -61,7 +57,7 @@ function addSaveAsPdfButton(shadowHost) {
           saveAsPdfButton.addEventListener("click", () => {
             const parentComment = shadowHost.parentElement;
             if (parentComment) {
-              var commentContent = parentComment.querySelector('#-post-rtjson-content');
+              var commentContent = parentComment.querySelector(COMMENT_CONTENT_SELECTOR);
             }
             handlePdfClick(commentContent);
           });
@@ -76,20 +72,20 @@ function addSaveAsPdfButton(shadowHost) {
 }
 
 const handlePdfClick = async (e) => {
-  const pdfStyles = `
-    <style>
-      body {
-        color: black !important;
-      }
-    </style>
-  `;
-
   const currentTimeUnix = new Date().getTime();
 
   const html2pdfOptions = {
     margin: 10,
     filename: `${currentTimeUnix}-reddit.pdf`,
   };
+
+  const pdfStyles = `
+  <style>
+    body {
+      color: black !important;
+    }
+  </style>
+`;
 
   const pdfContent = document.createElement('div');
   pdfContent.innerHTML = pdfStyles + e.innerHTML;
@@ -99,6 +95,5 @@ const handlePdfClick = async (e) => {
 
 // Run function on page load
 window.addEventListener("load", () => {
-  const commentSelector = 'shreddit-comment-action-row[slot="actionRow"]';
-  const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(commentSelector, intervalId), 100);
+  const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(COMMENT_SELECTOR, intervalId), 100);
 });
