@@ -1,4 +1,5 @@
 const SHARE_MENU_SELECTOR = `div[id$="-comment-share-menu"] button`;
+const COMMENT_TEST_ID = 'div[data-testid="comment"]';
 
 function getAllShareButtons() {
   
@@ -47,6 +48,7 @@ function addSaveAsPdfButton(shareButton) {
 
     const parentComment = shareButton.parentElement;
     const grandParentComment = parentComment.parentElement;
+    const greatGreatGrandParentElement = grandParentComment.parentElement.parentElement;
 
     if (grandParentComment) {
       grandParentComment.insertBefore(
@@ -55,6 +57,12 @@ function addSaveAsPdfButton(shareButton) {
       );
     }
 
+    saveAsPdfButton.addEventListener("click", () => {
+      if (greatGreatGrandParentElement) {
+        var commentContent = greatGreatGrandParentElement.querySelector(COMMENT_TEST_ID);
+      }
+      handlePdfClick(commentContent);
+    });
   }
 }
 
