@@ -1,85 +1,61 @@
-// const COMMENT_SELECTOR = 'shreddit-comment-action-row[slot="actionRow"]';
-// const COMMENT_SHARE_SLOT_SELECTOR = 'slot[name="comment-share"]';
-// const COMMENT_CONTENT_SELECTOR = '#-post-rtjson-content';
-// const COMMENT_SHARE_BUTTON_SELECTOR = 'shreddit-comment-share-button';
+const SHARE_MENU_SELECTOR = `div[id$="-comment-share-menu"] button`;
 
-const buttonXPath = `//button[contains(text(), 'Share')]`;
-const shareButton = document.evaluate(
-  buttonXPath,
-  document,
-  null,
-  XPathResult.FIRST_ORDERED_NODE_TYPE,
-  null
-).singleNodeValue;
+function getAllShareButtons() {
+  
+  const buttonXPath = `//button[contains(text(), 'Share')]`;
+  const shareButtonSnapshot = document.evaluate(
+    buttonXPath,
+    document,
+    null,
+    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
 
-console.log("shareButton", shareButton)
-
-// Finds all comment elements and adds the Save as PDF button to each
-function checkShadowDomLoadedForAllComments(selector, intervalId) {
-  const commentElements = document.querySelectorAll(selector);
-
-  commentElements.forEach((commentElement) => {
-    if (commentElement.shadowRoot) {
-      clearInterval(intervalId);
-      console.log(`Shadow DOM for comment '${commentElement}' has loaded.`);
-      addSaveAsPdfButton(commentElement);
+    const shareButtons = [];
+    for (let i = 0; i < shareButtonSnapshot.snapshotLength; i++) {
+      const shareButton = shareButtonSnapshot.snapshotItem(i);
+      shareButtons.push(shareButton);
     }
-  });
+
+    if (shareButtons.length > 0) {
+      shareButtons.forEach((shareBtn) => {
+          addSaveAsPdfButton(shareBtn);
+      });
+    }
 }
 
-function addSaveAsPdfButton(shadowHost) {
-      // Find the <slot> element within the Shadow DOM
-      const commentShareSlot = shadowHost.shadowRoot.querySelector(COMMENT_SHARE_SLOT_SELECTOR);
-      if (commentShareSlot) {
-        // create and insert <slot name="comment-save-as-pdf"></slot> after share slot
-        const commentSaveAsPdfSlot = document.createElement('slot');
-        commentSaveAsPdfSlot.setAttribute('name', 'comment-save-as-pdf');
+function addSaveAsPdfButton(shareButton) {
+  if (shareButton) {  
+    const saveAsPdfButton = document.createElement("button");
+    saveAsPdfButton.textContent = "Save as PDF";
+    saveAsPdfButton.id = "saveAsPdfButton";
 
-        const parentElement = commentShareSlot.parentElement;
-        parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
+    const shareButtonStyles = getComputedStyle(shareButton);
 
-        const shareButton = shadowHost.querySelector(
-          COMMENT_SHARE_BUTTON_SELECTOR
-        );
-        
-        if (shareButton) {  
-          // create and insert save as pdf button
-          const saveAsPdfButton = document.createElement("button");
-          saveAsPdfButton.textContent = "Save as PDF";
-          saveAsPdfButton.id = "saveAsPdfButton";
-          saveAsPdfButton.slot = "comment-save-as-pdf"
+    saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+    saveAsPdfButton.style.color = shareButtonStyles.color;
 
-          const shareButtonStyles = getComputedStyle(shareButton);
+    saveAsPdfButton.addEventListener("mouseover", () => {
+      saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+      saveAsPdfButton.style.color = shareButtonStyles.color;
+    });
 
-          saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-          saveAsPdfButton.style.color = shareButtonStyles.color;
+    saveAsPdfButton.addEventListener("mouseout", () => {
+      saveAsPdfButton.style.backgroundColor = "";
+      saveAsPdfButton.style.color = "";
+    });
 
-          saveAsPdfButton.addEventListener("mouseover", () => {
-            saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-            saveAsPdfButton.style.color = shareButtonStyles.color;
-          });
+    const parentComment = shareButton.parentElement;
+    const grandParentComment = parentComment.parentElement;
 
-          saveAsPdfButton.addEventListener("mouseout", () => {
-            saveAsPdfButton.style.backgroundColor = "";
-            saveAsPdfButton.style.color = "";
-          });
+    if (grandParentComment) {
+      grandParentComment.insertBefore(
+        saveAsPdfButton,
+        parentComment.nextSibling
+      );
+    }
 
-  
-          saveAsPdfButton.addEventListener("click", () => {
-            const parentComment = shadowHost.parentElement;
-            if (parentComment) {
-              var commentContent = parentComment.querySelector(COMMENT_CONTENT_SELECTOR);
-            }
-            handlePdfClick(commentContent);
-          });
-      
-          // Insert "Save as PDF" to the right of "Share"
-          shareButton.parentNode.insertBefore(
-            saveAsPdfButton,
-            shareButton.nextSibling.nextSibling
-          );
-        }
-      }
+  }
 }
 
 const handlePdfClick = async (e) => {
@@ -106,5 +82,5 @@ const handlePdfClick = async (e) => {
 
 // Run function on page load
 window.addEventListener("load", () => {
-  const intervalId = setInterval(() => checkShadowDomLoadedForAllComments(COMMENT_SELECTOR, intervalId), 100);
+  getAllShareButtons();
 });
