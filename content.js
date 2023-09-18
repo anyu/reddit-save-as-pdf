@@ -76,12 +76,25 @@ function addSaveAsPdfButton(shadowHost) {
 }
 
 const handlePdfClick = async (e) => {
-  var opt = {
-    margin:       1,
-    filename:     'reddit-comment.pdf',
+  const pdfStyles = `
+    <style>
+      body {
+        color: black !important;
+      }
+    </style>
+  `;
+
+  const currentTimeUnix = new Date().getTime();
+
+  const html2pdfOptions = {
+    margin: 10,
+    filename: `${currentTimeUnix}-reddit.pdf`,
   };
-    e.style.color='black'
-    html2pdf().set(opt).from(e).save();
+
+  const pdfContent = document.createElement('div');
+  pdfContent.innerHTML = pdfStyles + e.innerHTML;
+
+  html2pdf().set(html2pdfOptions).from(pdfContent).save();
 }
 
 // Run function on page load
