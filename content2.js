@@ -1,68 +1,49 @@
-const SHARE_MENU_SELECTOR = `div[id$="-comment-share-menu"] button`;
 const COMMENT_TEST_ID = 'div[data-testid="comment"]';
-
-function getAllShareButtons() {
-  
-  const buttonXPath = `//button[contains(text(), 'Share')]`;
-  const shareButtonSnapshot = document.evaluate(
-    buttonXPath,
-    document,
-    null,
-    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-    null
-  );
-
-    const shareButtons = [];
-    for (let i = 0; i < shareButtonSnapshot.snapshotLength; i++) {
-      const shareButton = shareButtonSnapshot.snapshotItem(i);
-      shareButtons.push(shareButton);
-    }
-
-    if (shareButtons.length > 0) {
-      shareButtons.forEach((shareBtn) => {
-          addSaveAsPdfButton(shareBtn);
-      });
-    }
-}
+const BUTTON_XPATH = `//button[contains(text(), 'Share')]`;
 
 function addSaveAsPdfButton(shareButton) {
-  if (shareButton) {  
-    const saveAsPdfButton = document.createElement("button");
-    saveAsPdfButton.textContent = "Save as PDF";
-    saveAsPdfButton.id = "saveAsPdfButton";
+  const grandparentElement = shareButton.parentElement.parentElement;
 
-    const shareButtonStyles = getComputedStyle(shareButton);
+  if (grandparentElement) {
+    const saveAsPDFButton = grandparentElement.querySelector('button#saveAsPdfButton');
+    if (!saveAsPDFButton) {
+      const saveAsPdfButton = document.createElement("button");
+      saveAsPdfButton.textContent = "Save as PDF";
+      saveAsPdfButton.id = "saveAsPdfButton";
 
-    saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-    saveAsPdfButton.style.color = shareButtonStyles.color;
+      const shareButtonStyles = getComputedStyle(shareButton);
 
-    saveAsPdfButton.addEventListener("mouseover", () => {
       saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
       saveAsPdfButton.style.color = shareButtonStyles.color;
-    });
 
-    saveAsPdfButton.addEventListener("mouseout", () => {
-      saveAsPdfButton.style.backgroundColor = "";
-      saveAsPdfButton.style.color = "";
-    });
+      saveAsPdfButton.addEventListener("mouseover", () => {
+        saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+        saveAsPdfButton.style.color = shareButtonStyles.color;
+      });
 
-    const parentComment = shareButton.parentElement;
-    const grandParentComment = parentComment.parentElement;
-    const greatGreatGrandParentElement = grandParentComment.parentElement.parentElement;
+      saveAsPdfButton.addEventListener("mouseout", () => {
+        saveAsPdfButton.style.backgroundColor = "";
+        saveAsPdfButton.style.color = "";
+      });
 
-    if (grandParentComment) {
-      grandParentComment.insertBefore(
-        saveAsPdfButton,
-        parentComment.nextSibling
-      );
-    }
+      const parentElement = shareButton.parentElement;
+      const grandParentElement = parentElement.parentElement;
+      const greatGreatGrandParentElement = grandParentElement.parentElement.parentElement;
 
-    saveAsPdfButton.addEventListener("click", () => {
-      if (greatGreatGrandParentElement) {
-        var commentContent = greatGreatGrandParentElement.querySelector(COMMENT_TEST_ID);
+      if (grandParentElement) {
+        grandParentElement.insertBefore(
+          saveAsPdfButton,
+          parentComment.nextSibling
+        );
       }
-      handlePdfClick(commentContent);
-    });
+
+      saveAsPdfButton.addEventListener("click", () => {
+        if (greatGreatGrandParentElement) {
+          var commentContent = greatGreatGrandParentElement.querySelector(COMMENT_TEST_ID);
+        }
+        handlePdfClick(commentContent);
+      });
+    }
   }
 }
 
@@ -88,7 +69,20 @@ const handlePdfClick = async (e) => {
   html2pdf().set(html2pdfOptions).from(pdfContent).save();
 }
 
-// Run function on page load
-window.addEventListener("load", () => {
-  getAllShareButtons();
-});
+function observeShareButtons() {
+  const shareButtons = document.evaluate(
+    BUTTON_XPATH,
+    document,
+    null,
+    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
+
+  for (let i = 0; i < shareButtons.snapshotLength; i++) {
+    const shareButton = shareButtons.snapshotItem(i);
+      addSaveAsPdfButton(shareButton);
+  }
+}
+
+observeShareButtons();
+setInterval(observeShareButtons, 5000); // every 5s
