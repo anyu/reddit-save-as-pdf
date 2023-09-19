@@ -7,25 +7,11 @@ function addSaveAsPdfButton(shareButton) {
   if (grandparentElement) {
     const saveAsPDFButton = grandparentElement.querySelector('button#saveAsPdfButton');
     if (!saveAsPDFButton) {
-      const saveAsPdfButton = document.createElement("button");
+
+      const saveAsPdfButton = shareButton.cloneNode(true);
       saveAsPdfButton.textContent = "Save as PDF";
       saveAsPdfButton.id = "saveAsPdfButton";
-
-      const shareButtonStyles = getComputedStyle(shareButton);
-
-      saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-      saveAsPdfButton.style.color = shareButtonStyles.color;
-
-      saveAsPdfButton.addEventListener("mouseover", () => {
-        saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-        saveAsPdfButton.style.color = shareButtonStyles.color;
-      });
-
-      saveAsPdfButton.addEventListener("mouseout", () => {
-        saveAsPdfButton.style.backgroundColor = "";
-        saveAsPdfButton.style.color = "";
-      });
-
+     
       const parentElement = shareButton.parentElement;
       const grandParentElement = parentElement.parentElement;
       const greatGreatGrandParentElement = grandParentElement.parentElement.parentElement;
