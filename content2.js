@@ -1,13 +1,16 @@
 const COMMENT_TEST_ID = 'div[data-testid="comment"]';
-const BUTTON_XPATH = `//button[contains(text(), 'Share')]`;
+const SAVE_AS_PDF_BUTTON = 'button#saveAsPdfButton';
+const SHARE_BUTTON_XPATH = `//button[contains(text(), 'Share')]`;
 
 function addSaveAsPdfButton(shareButton) {
   const grandparentElement = shareButton.parentElement.parentElement;
-
   if (grandparentElement) {
-    const saveAsPDFButton = grandparentElement.querySelector('button#saveAsPdfButton');
+    const saveAsPDFButton = grandparentElement.querySelector(SAVE_AS_PDF_BUTTON);
+
+    // If Save as PDF button doesn't already exist
     if (!saveAsPDFButton) {
 
+      // Clone Share button and update text
       const saveAsPdfButton = shareButton.cloneNode(true);
       saveAsPdfButton.textContent = "Save as PDF";
       saveAsPdfButton.id = "saveAsPdfButton";
@@ -16,6 +19,7 @@ function addSaveAsPdfButton(shareButton) {
       const grandParentElement = parentElement.parentElement;
       const greatGreatGrandParentElement = grandParentElement.parentElement.parentElement;
 
+      // Insert "Save as PDF" to the right of "Share"
       if (grandParentElement) {
         grandParentElement.insertBefore(
           saveAsPdfButton,
@@ -51,13 +55,13 @@ const handlePdfClick = async (e) => {
 
   const pdfContent = document.createElement('div');
   pdfContent.innerHTML = pdfStyles + e.innerHTML;
-
   html2pdf().set(html2pdfOptions).from(pdfContent).save();
 }
 
-function observeShareButtons() {
+// Finds all Share buttons and triggers adding the Save as PDF button to each
+function getAllShareButtons() {
   const shareButtons = document.evaluate(
-    BUTTON_XPATH,
+    SHARE_BUTTON_XPATH,
     document,
     null,
     XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
@@ -70,5 +74,5 @@ function observeShareButtons() {
   }
 }
 
-observeShareButtons();
-setInterval(observeShareButtons, 3000); // every 3s
+getAllShareButtons();
+setInterval(getAllShareButtons, 3000); // every 3s
