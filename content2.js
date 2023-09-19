@@ -33,7 +33,7 @@ function addSaveAsPdfButton(shareButton) {
       if (grandParentElement) {
         grandParentElement.insertBefore(
           saveAsPdfButton,
-          parentComment.nextSibling
+          parentElement.nextSibling
         );
       }
 
@@ -85,4 +85,4 @@ function observeShareButtons() {
 }
 
 observeShareButtons();
-setInterval(observeShareButtons, 5000); // every 5s
+setInterval(observeShareButtons, 3000); // every 3s
