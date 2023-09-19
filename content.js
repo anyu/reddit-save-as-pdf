@@ -4,6 +4,7 @@ const COMMENT_SAVE_AS_PDF_SLOT_SELECTOR = 'slot[name="comment-save-as-pdf"]';
 
 const COMMENT_CONTENT_SELECTOR = '#-post-rtjson-content';
 const COMMENT_SHARE_BUTTON_SELECTOR = 'shreddit-comment-share-button';
+const COMMENT_SHARE_BUTTON_SPAN_SELECTOR = 'button span:first-child span:last-child';
 
 function addSaveAsPdfButton(shadowHost) {
   // Find the <slot> element within the Shadow DOM
@@ -29,24 +30,33 @@ function addSaveAsPdfButton(shadowHost) {
       
       if (shareButton) {  
         // create and insert save as pdf button
+
+        const shareButtonSpan = shareButton.shadowRoot.querySelector(COMMENT_SHARE_BUTTON_SPAN_SELECTOR)
+
         const saveAsPdfButton = document.createElement("button");
         saveAsPdfButton.textContent = "Save as PDF";
         saveAsPdfButton.id = "saveAsPdfButton";
         saveAsPdfButton.slot = "comment-save-as-pdf"
   
         const shareButtonStyles = getComputedStyle(shareButton);
-  
+
         saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-        saveAsPdfButton.style.color = shareButtonStyles.color;
-  
+        saveAsPdfButton.style.paddingLeft = "10px"
+        saveAsPdfButton.style.paddingRight = "10px"
+
+        // Some styles are on the nested span
+        const shareButtonSpanStyles = getComputedStyle(shareButtonSpan);
+        saveAsPdfButton.style.color = shareButtonSpanStyles.color;
+
         saveAsPdfButton.addEventListener("mouseover", () => {
-          saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-          saveAsPdfButton.style.color = shareButtonStyles.color;
+          saveAsPdfButton.style.backgroundColor = "";
+          saveAsPdfButton.style.color = "";
         });
   
         saveAsPdfButton.addEventListener("mouseout", () => {
-          saveAsPdfButton.style.backgroundColor = "";
-          saveAsPdfButton.style.color = "";
+          saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+          saveAsPdfButton.style.color = shareButtonSpanStyles.color;
+
         }); 
 
         saveAsPdfButton.addEventListener("click", () => {
@@ -101,7 +111,6 @@ function observeShareButtons() {
     }
   });
 }
-
 
 observeShareButtons();
 setInterval(observeShareButtons, 3000); // every 3s

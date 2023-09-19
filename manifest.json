@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "matches": ["https://*.reddit.com/*"],
-      "js": ["html2pdf.bundle.min.js", "content2.js"]
+      "js": ["html2pdf.bundle.min.js", "content.js"]
     }
   ],
   "action": {
