@@ -2,16 +2,14 @@ window.addEventListener("load", () => {
   detectLoggedInStatus()
 });
 
+const HEADER_USER_DROPDOWN = '.header-user-dropdown';
+
 function detectLoggedInStatus() {
-  const headerUserDropdown = document.querySelector(".header-user-dropdown");
-    // debug
-    // console.log("User is logged in")
-  if (headerUserDropdown) {
+  const headerUserDropdown = document.querySelector(HEADER_USER_DROPDOWN);
+  if (headerUserDropdown) { // user is logged in
     getAllShareButtons();
     setInterval(getAllShareButtons, 3000); // every 3s
   } else {
-    // debug
-    // console.log("User is logged out")
     getAllComments();
     setInterval(getAllComments, 3000);
   }
@@ -19,12 +17,10 @@ function detectLoggedInStatus() {
 
 const handlePdfClick = async (e) => {
   const currentTimeUnix = new Date().getTime();
-
   const html2pdfOptions = {
     margin: 10,
     filename: `${currentTimeUnix}-reddit.pdf`,
   };
-
   const pdfStyles = `
   <style>
     body {
@@ -32,7 +28,6 @@ const handlePdfClick = async (e) => {
     }
   </style>
 `;
-
   const pdfContent = document.createElement('div');
   pdfContent.innerHTML = pdfStyles + e.innerHTML;
   html2pdf().set(html2pdfOptions).from(pdfContent).save();
