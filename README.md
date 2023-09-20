@@ -26,7 +26,6 @@ Probably disable it after trying out for now :D
 - Probably could use mutation observers instead?
 - Simplify DOM traversal
 - Include link to the comment in the PDF
-- Save the nicer version
 - Try using background worker to open up embed page and save nicer version
 - Add Save to PDF button elsewhere too (main post, from homepage, etc)
 - Save PDF as text instead of image
