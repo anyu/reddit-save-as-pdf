@@ -15,7 +15,7 @@ function detectLoggedInStatus() {
   }
 }
 
-const handlePdfClick = async (e) => {
+const handlePdfClick = async (e, linkToComment) => {
   const currentTimeUnix = new Date().getTime();
   const html2pdfOptions = {
     margin: 10,
@@ -29,7 +29,14 @@ const handlePdfClick = async (e) => {
   </style>
 `;
   const pdfContent = document.createElement('div');
-  pdfContent.innerHTML = pdfStyles + e.innerHTML;
+
+  const linkToCommentHTML = `
+  <div>
+    <a href="${linkToComment}" target="_blank">${linkToComment}</a>
+  </div>
+`;
+
+  pdfContent.innerHTML = pdfStyles + e.innerHTML + linkToCommentHTML;
   html2pdf().set(html2pdfOptions).from(pdfContent).save();
 }
 
@@ -169,14 +176,15 @@ function addSaveAsPdfButton(rootComment) {
         // On click, retrieve text of the clicked comment
         saveAsPdfButton.addEventListener("click", () => {
           const parentComment = rootComment.parentElement;
+          const permalink = rootComment.getAttribute('permalink');
+          const fullURL = `https://www.reddit.com/${permalink}`;
+
           if (parentComment) {
             var commentContent = parentComment.querySelector(COMMENT_TEXT);
           }
-          handlePdfClick(commentContent);
+          handlePdfClick(commentContent, fullURL);
         });
       }
     }
   }
 }
-
-
