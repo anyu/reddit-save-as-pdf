@@ -32,6 +32,7 @@ const handlePdfClick = async (e, linkToComment) => {
 
   const linkToCommentHTML = `
   <div>
+    <br/>
     <a href="${linkToComment}" target="_blank">${linkToComment}</a>
   </div>
 `;
@@ -43,6 +44,8 @@ const handlePdfClick = async (e, linkToComment) => {
 /************************* LOGGED IN ***************************/
 
 const COMMENT_TEST_ID = 'div[data-testid="comment"]';
+const COMMENT_HEADER = 'div[data-testid="post-comment-header"]';
+const COMMENT_LINK = 'a[data-testid="comment_timestamp';
 const SAVE_AS_PDF_BUTTON = 'button#saveAsPdfButton';
 const SHARE_BUTTON_XPATH = `//button[contains(text(), 'Share')]`;
 
@@ -90,8 +93,19 @@ function addSaveAsPdfButtonWhenLoggedIn(shareButton) {
       saveAsPdfButton.addEventListener("click", () => {
         if (greatGreatGrandParentElement) {
           var commentContent = greatGreatGrandParentElement.querySelector(COMMENT_TEST_ID);
+
+          var commentHeader = greatGreatGrandParentElement.querySelector(COMMENT_HEADER);
+          if(commentHeader) {
+            const anchorElement = commentHeader.querySelector(COMMENT_LINK);
+            const commentLink = anchorElement.getAttribute("href");
+
+            const parsedURL = new URL(commentLink);
+
+            // exclude misc query params
+            const baseURL = `${parsedURL.protocol}//${parsedURL.host}${parsedURL.pathname}`;
+            handlePdfClick(commentContent, baseURL);
+          }
         }
-        handlePdfClick(commentContent);
       });
     }
   }
@@ -164,7 +178,6 @@ function addSaveAsPdfButton(rootComment) {
         saveAsPdfButton.addEventListener("mouseout", () => {
           saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
           saveAsPdfButton.style.color = shareButtonSpanStyles.color;
-
         }); 
   
         // Insert "Save as PDF" to the right of "Share"
@@ -177,7 +190,7 @@ function addSaveAsPdfButton(rootComment) {
         saveAsPdfButton.addEventListener("click", () => {
           const parentComment = rootComment.parentElement;
           const permalink = rootComment.getAttribute('permalink');
-          const fullURL = `https://www.reddit.com/${permalink}`;
+          const fullURL = `https://www.reddit.com${permalink}`;
 
           if (parentComment) {
             var commentContent = parentComment.querySelector(COMMENT_TEXT);
