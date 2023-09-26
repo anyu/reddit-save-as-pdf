@@ -1,3 +1,5 @@
+const { jsPDF } = window.jspdf;
+
 window.addEventListener("load", () => {
   detectLoggedInStatus()
 });
@@ -38,7 +40,14 @@ const handlePdfClick = async (e, linkToComment) => {
 `;
 
   pdfContent.innerHTML = pdfStyles + e.innerHTML + linkToCommentHTML;
-  html2pdf().set(html2pdfOptions).from(pdfContent).save();
+  // html2pdf().set(html2pdfOptions).from(pdfContent).save();
+
+  const textContent = pdfContent.textContent;
+
+  const doc = new jsPDF();
+
+  doc.text(textContent, 10, 10);
+  doc.save("test.pdf");
 }
 
 /************************* LOGGED IN ***************************/
