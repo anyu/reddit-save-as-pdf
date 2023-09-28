@@ -1,4 +1,4 @@
-# Reddit - Save as PDF
+# Reddit - Save as PDF (alpha)
 
 ![](images/banner.svg)
 A chrome extension to save a Reddit comment as PDF.
@@ -24,9 +24,12 @@ Installation is currently manual as this is an unpublished extension.
 Probably disable it after trying out for now :D
 
 ### TODO
-- Try [jsPDF](https://github.com/parallax/jsPDF) directly
-  - Hopefully solves issue w/ CSP error on extension page (triggered only when logged in and hit the Save as PDF button, even though functionality still works)
-  - Should be able to save PDF as text instead of image
+- [jsPDF](https://github.com/parallax/jsPDF) issues
+  - Doesn't fix CSP error on extension page (triggered only when logged in and hit the Save as PDF button, even though functionality still works)
+  - Takes a much longer time to save
+  - Link is cut off
+  - Formatting could still be better
+  - Can highlight text but it's per word
 - Simplify DOM traversal
 
 #### Nice to haves

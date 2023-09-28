@@ -27,7 +27,7 @@
   "content_scripts": [
     {
       "matches": ["https://*.reddit.com/*"],
-      "js": ["jspdf_2.5.1.min.js","content.js"]
+      "js": ["html2canvas_1.4.1.min.js", "dompurify_3.0.6_purify.min.js", "jspdf_2.5.1.min.js","content.js"]
     }
   ]
 }

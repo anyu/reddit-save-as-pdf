@@ -19,35 +19,38 @@ function detectLoggedInStatus() {
 
 const handlePdfClick = async (e, linkToComment) => {
   const currentTimeUnix = new Date().getTime();
-  const html2pdfOptions = {
-    margin: 10,
-    filename: `${currentTimeUnix}-reddit.pdf`,
-  };
+
   const pdfStyles = `
   <style>
     body {
       color: black !important;
     }
-  </style>
-`;
+  </style>`;
+  
   const pdfContent = document.createElement('div');
 
   const linkToCommentHTML = `
   <div>
     <br/>
     <a href="${linkToComment}" target="_blank">${linkToComment}</a>
-  </div>
-`;
+  </div>`;
 
   pdfContent.innerHTML = pdfStyles + e.innerHTML + linkToCommentHTML;
-  // html2pdf().set(html2pdfOptions).from(pdfContent).save();
 
-  const textContent = pdfContent.textContent;
+  window.jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF('p', 'pt', 'a4'); // orientation, unit, format
 
-  const doc = new jsPDF();
-
-  doc.text(textContent, 10, 10);
-  doc.save("test.pdf");
+  doc.html(pdfContent, {
+    callback: function(doc) {
+        doc.save(`${currentTimeUnix}-reddit.pdf`);
+    },
+    margin: [20, 20, 20, 20],
+    autoPaging: 'text',
+    x: 0,
+    y: 0,
+    width: 560,
+    windowWidth: 560
+  });
 }
 
 /************************* LOGGED IN ***************************/
