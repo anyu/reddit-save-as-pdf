@@ -23,11 +23,11 @@
       "128": "images/icon128.png"
     }   
   },
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "downloads"],
   "content_scripts": [
     {
       "matches": ["https://*.reddit.com/*"],
-      "js": ["html2canvas_1.4.1.min.js", "dompurify_3.0.6_purify.min.js", "jspdf_2.5.1.min.js","content.js"]
+      "js": ["content.js"]
     }
   ]
 }

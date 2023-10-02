@@ -1,5 +1,3 @@
-const { jsPDF } = window.jspdf;
-
 window.addEventListener("load", () => {
   detectLoggedInStatus()
 });
@@ -17,16 +15,37 @@ function detectLoggedInStatus() {
   }
 }
 
-const handlePdfClick = async (e, linkToComment) => {
-  const currentTimeUnix = new Date().getTime();
+function convertHTMLToPDF(elem, linkToComment) {
 
-  const pdfStyles = `
-  <style>
-    body {
-      color: black !important;
-    }
-  </style>`;
-  
+  // See chrome://settings/fonts for default included fonts
+  // Noto Sans is what Reddit uses, but Avenir is nicer :)
+  elem.style.fontFamily = 'Avenir, Noto Sans Kannada, Arial, sans-serif';
+
+  const newWindow = window.open('', '', 'width=800,height=600');
+  newWindow.document.open();
+  newWindow.document.write(elem.outerHTML);
+  newWindow.document.close();
+
+  // Suffix default file name with comment ID or current time in UNIX if none
+  const currentTimeUnix = new Date().getTime();
+  commentID = currentTimeUnix
+
+  // Expects the following Reddit URL format - extracts the ID after the 2nd `comment`
+  // https://www.reddit.com/r/explainlikeimfive/comments/1dd3g1/comment/c9p9b83
+  const match = /comment\/([^/]+)/.exec(linkToComment);
+  if (match && match[1]) {
+    commentID = match[1];
+  }
+  newWindow.document.title = `reddit-comment-${commentID}.pdf`;
+
+  // Wait for content to load
+  setTimeout(() => {
+    newWindow.print();
+    newWindow.close();
+  }, 500);
+}
+
+const handlePdfClick = async (e, linkToComment) => {
   const pdfContent = document.createElement('div');
 
   const linkToCommentHTML = `
@@ -35,22 +54,8 @@ const handlePdfClick = async (e, linkToComment) => {
     <a href="${linkToComment}" target="_blank">${linkToComment}</a>
   </div>`;
 
-  pdfContent.innerHTML = pdfStyles + e.innerHTML + linkToCommentHTML;
-
-  window.jsPDF = window.jspdf.jsPDF;
-  const doc = new jsPDF('p', 'pt', 'a4'); // orientation, unit, format
-
-  doc.html(pdfContent, {
-    callback: function(doc) {
-        doc.save(`${currentTimeUnix}-reddit.pdf`);
-    },
-    margin: [20, 20, 20, 20],
-    autoPaging: 'text',
-    x: 0,
-    y: 0,
-    width: 560,
-    windowWidth: 560
-  });
+  pdfContent.innerHTML = e.innerHTML + linkToCommentHTML;
+  convertHTMLToPDF(pdfContent, linkToComment)
 }
 
 /************************* LOGGED IN ***************************/
