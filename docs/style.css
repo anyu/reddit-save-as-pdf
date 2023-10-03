@@ -1,16 +1,21 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   text-align: center;
   background-color: #f9f9f9;
 }
 
+header {
+  font-family: 'Inter', Arial, sans-serif;
+  text-align: center;
+}
+
 h1 {
-  font-size: 48px;
+  font-size: 60px;
   font-weight: bold;
   margin-top: 50px;
 }
 
-.tagline {
+.h3 {
   font-size: 24px;
   color: black;
   margin-top: 20px;
@@ -24,6 +29,11 @@ h1 {
   display: block;   
 }
 
-.inner {
-  text-align: center;
+.preview-image {
+  margin: 0 auto;
+  display: block;  
+}
+
+footer {
+  font-size: 12px;
 }
