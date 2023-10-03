@@ -45,7 +45,7 @@ function convertHTMLToPDF(elem, linkToComment) {
   }, 500);
 }
 
-const handlePdfClick = async (e, linkToComment) => {
+async function handlePdfClick(e, linkToComment) {
   const pdfContent = document.createElement('div');
 
   const linkToCommentHTML = `
