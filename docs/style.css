@@ -1,17 +1,18 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  background-color: #f9f9f9;
 }
 
-.title {
-  font-size: 36px;
+h1 {
+  font-size: 48px;
   font-weight: bold;
   margin-top: 50px;
 }
 
 .tagline {
   font-size: 24px;
-  color: #555;
+  color: black;
   margin-top: 20px;
 }
 
@@ -19,4 +20,10 @@ body {
   max-width: 100%;
   height: auto;
   margin-top: 30px;
+  margin: 0 auto;
+  display: block;   
+}
+
+.inner {
+  text-align: center;
 }
