@@ -23,7 +23,7 @@
       "128": "images/icon128.png"
     }   
   },
-  "permissions": ["activeTab", "scripting", "downloads", "downloads.open"],
+  "permissions": ["activeTab", "scripting", "downloads", "downloads.open", "storage"],
   "content_scripts": [
     {
       "matches": ["https://*.reddit.com/*"],
