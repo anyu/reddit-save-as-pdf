@@ -32,6 +32,7 @@ h1 {
 .preview-image {
   margin: 0 auto;
   display: block;  
+  max-width: 600px;
 }
 
 footer {
