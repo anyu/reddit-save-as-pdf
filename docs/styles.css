@@ -1,46 +1,21 @@
-@media screen and (max-width: 768px) {
-  #preview-image {
-      max-width: 80%;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  #preview-image {
-      max-width: 50%;
-  }
-}
-
-@media screen and (max-width: 320px) {
-  #preview-image {
-      max-width: 30%;
-  }
-}
-
 body {
   font-family: 'Inter', Arial, sans-serif;
   text-align: center;
   background-color: #f9f9f9;
-}
-
-header {
-  font-family: 'Inter', Arial, sans-serif;
-  text-align: center;
-}
-
-a {
-  color: black;
+  font-size: 16px;
 }
 
 h1 {
-  font-size: 60px;
+  font-size: 3rem;
   font-weight: 900;
-  margin-top: 30px;
+  margin-top: 1.875rem;
   margin-bottom: 0;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 1.3rem;
   font-weight: 200;
+  line-height: 1.5;
   color: black;
 }
 
@@ -52,38 +27,26 @@ a:hover {
   text-decoration: underline;
 }
 
-
-#main {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#wrapper {
-  margin: 30px;
-  padding: 30px;
+footer {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 1rem;
+  padding: 1.875rem;
 }
 
 #splash-image {
-  max-width: 100%;
+  max-width: 20%;
   height: auto;
-  margin-top: 100px;
-  margin: 0 auto;
-  display: block;   
+  margin: 3rem auto 0;
+  display: block;
 }
 
 #preview-image {
-  margin: 40px auto;
+  margin: 2.5rem auto; 
   height: auto;
-  max-width: 800px;
+  max-width: 90%;
+  display: block;
 }
 
 #badge:hover {
   border: 1px solid #c6c6c6;
-}
-
-footer {
-  padding: 30px;
-  font-size: 16px;
 }

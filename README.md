@@ -1,11 +1,11 @@
 # Reddit - Save as PDF (alpha)
 
-![](images/banner.svg)
+![](docs/images/banner.svg)
 A chrome extension to save a Reddit comment as PDF.
 
 Because occasionally I want to do so.
 
-![](images/preview.png)
+![](docs/images/preview.png)
 
 ### Requirements
 - Works with the new Reddit UI, not old.
