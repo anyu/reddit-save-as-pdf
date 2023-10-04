@@ -1,11 +1,11 @@
-# Reddit - Save as PDF (alpha)
+# Reddit Save as PDF
 
 ![](docs/images/banner.svg)
 A chrome extension to save a Reddit comment as PDF.
 
 Because occasionally I want to do so.
 
-![](docs/images/preview.png)
+![](docs/images/preview.gif)
 
 ### Requirements
 - Works with the new Reddit UI, not old.
@@ -22,9 +22,3 @@ Installation is currently manual as this is an unpublished extension.
 
 ### Dev Notes
 - This extension does not make use of commonly used JS/HTML to PDF libraries such as [jsPDF](https://github.com/parallax/jsPDF) or [html2pdf](https://github.com/eKoopmans/html2pdf.js), as they all rely on [html2canvas](https://github.com/niklasvh/html2canvas) under the hood, which does not encourage its use in browser extensions. One such known-ish issue that I encountered with html2canvas was CSP errors (when a user is logged in).
-
-### TODO
-- Add gif to README
-
-#### Nice to haves
-- Add Save to PDF button elsewhere too (main post, from homepage, etc)

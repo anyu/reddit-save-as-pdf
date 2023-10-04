@@ -48,6 +48,15 @@ footer {
   display: block;
 }
 
+#preview-gif {
+  margin: 2.5rem auto; 
+  height: auto;
+  max-width: 70%;
+  display: block;
+  border: 5px solid black;
+  border-radius: 5px;
+}
+
 #badge:hover {
   border: 1px solid #c6c6c6;
 }
