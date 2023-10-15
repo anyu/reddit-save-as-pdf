@@ -5,8 +5,11 @@ A handy Chrome extension to save a Reddit comment as PDF.
 
 Because occasionally I want to do so.
 
+![](landing-page/images/preview.gif)
+
+
 ### Requirements
-- Works with the new Reddit UI, not old.
+Works with the new Reddit UI, not old.
 
 ### Installation
 
