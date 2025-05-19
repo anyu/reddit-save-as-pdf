@@ -173,20 +173,24 @@ function addSaveAsPdfButton(rootComment) {
         // Find the actual <button> inside the shareButton's shadow root
         const shareButtonElem = shareButton.shadowRoot.querySelector('button');
 
-        // Create new button
-        const saveAsPdfButton = document.createElement("button");
-        saveAsPdfButton.textContent = "Save as PDF";
+        // Clone the button deeply (preserves styles and structure)
+        const saveAsPdfButton = shareButton.cloneNode(true);
         saveAsPdfButton.id = "saveAsPdfButton";
         saveAsPdfButton.setAttribute("slot", "comment-save-as-pdf");
 
-        // Copy classes and styles from the Share button for a perfect match
-        if (shareButtonElem) {
-          saveAsPdfButton.className = shareButtonElem.className;
-          saveAsPdfButton.style.cssText = shareButtonElem.style.cssText;
-        }
+        // Update text and click behavior
+        const spanText = saveAsPdfButton.querySelector('span span:last-child');
+        if (spanText) spanText.textContent = 'Save as PDF';
+
+        // Optionally change icon (optional)
+        const icon = saveAsPdfButton.querySelector('svg');
+        if (icon) icon.remove();
+
 
         // On click, retrieve text of the clicked comment
-        saveAsPdfButton.addEventListener("click", () => {
+        saveAsPdfButton.addEventListener("click", (e) => {
+          e.stopPropagation();
+          e.preventDefault();
           const parentComment = rootComment.parentElement;
           const permalink = rootComment.getAttribute('permalink');
           const fullURL = `https://www.reddit.com${permalink}`;
@@ -202,8 +206,57 @@ function addSaveAsPdfButton(rootComment) {
           }
         });
 
+        // Insert it right after the Share button
+        shareButton.parentElement.appendChild(saveAsPdfButton);
+
+
+        // Create new button
+        // const saveAsPdfButton = document.createElement("button");
+        // saveAsPdfButton.textContent = "Save as PDF";
+
+        // Copy classes and styles from the Share button for a perfect match
+        // if (shareButtonElem) {
+        //   // saveAsPdfButton.className = shareButtonElem.className;
+        //   saveAsPdfButton.style.cssText = shareButtonElem.style.cssText;
+        //   const shareButtonStyles = getComputedStyle(shareButton);
+        //   saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+        // }
+
+        // // Replace this with how you get the shadow root — adjust as needed
+        // const dropdownMenu = document.querySelector('faceplate-dropdown-menu');
+        // const shadowRoot = dropdownMenu.shadowRoot || dropdownMenu;
+
+        // // Find the existing Share button
+        // const shareButton = shadowRoot.querySelector('button');
+
+
+        // Match styles by using share button and span styles
+
+        // // Some styles are on the nested span
+        // const shareButtonSpan = shareButton.shadowRoot.querySelector(COMMENT_SHARE_BUTTON_SPAN)
+        // const shareButtonSpanStyles = getComputedStyle(shareButtonSpan);
+        // saveAsPdfButton.style.color = shareButtonSpanStyles.color;
+
+        // // Manually set some styles that aren't copied for some reason
+        // saveAsPdfButton.style.paddingLeft = "10px"
+        // saveAsPdfButton.style.paddingRight = "10px"
+
+        // // Set hover state styles
+        // saveAsPdfButton.addEventListener("mouseover", () => {
+        //   saveAsPdfButton.style.backgroundColor = "";
+        //   saveAsPdfButton.style.color = "";
+        // });
+
+        // saveAsPdfButton.addEventListener("mouseout", () => {
+        //   saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+        //   saveAsPdfButton.style.color = shareButtonSpanStyles.color;
+        // });
+
+
+
+
         // Append the button to the custom element (light DOM) for slot projection
-        rootComment.appendChild(saveAsPdfButton);
+        // rootComment.appendChild(saveAsPdfButton);
       }
     }
   }
