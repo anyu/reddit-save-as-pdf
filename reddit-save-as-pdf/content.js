@@ -46,6 +46,10 @@ function convertHTMLToPDF(elem, linkToComment) {
 }
 
 async function handlePdfClick(e, linkToComment) {
+  if (!e) {
+    alert("Could not find comment content to save as PDF.");
+    return;
+  }
   const pdfContent = document.createElement('div');
 
   const linkToCommentHTML = `
@@ -94,7 +98,7 @@ function addSaveAsPdfButtonWhenLoggedIn(shareButton) {
       const saveAsPdfButton = shareButton.cloneNode(true);
       saveAsPdfButton.textContent = "Save as PDF";
       saveAsPdfButton.id = "saveAsPdfButton";
-     
+
       const parentElement = shareButton.parentElement;
       const grandParentElement = parentElement.parentElement;
       const greatGreatGrandParentElement = grandParentElement.parentElement.parentElement;
@@ -112,7 +116,7 @@ function addSaveAsPdfButtonWhenLoggedIn(shareButton) {
           var commentContent = greatGreatGrandParentElement.querySelector(COMMENT_TEST_ID);
 
           var commentHeader = greatGreatGrandParentElement.querySelector(COMMENT_HEADER);
-          if(commentHeader) {
+          if (commentHeader) {
             const anchorElement = commentHeader.querySelector(COMMENT_LINK);
             const commentLink = anchorElement.getAttribute("href");
 
@@ -155,53 +159,31 @@ function addSaveAsPdfButton(rootComment) {
   const commentShareSlot = rootComment.shadowRoot.querySelector(COMMENT_SHARE_SLOT);
   if (commentShareSlot) {
     const parentElement = commentShareSlot.parentElement;
-    const saveAsPDFButton = parentElement.querySelector(COMMENT_SAVE_AS_PDF_SLOT);
+    const saveAsPDFSlot = parentElement.querySelector(COMMENT_SAVE_AS_PDF_SLOT);
 
-    // If Save as PDF button doesn't already exist
-    if (!saveAsPDFButton) {
+    // If Save as PDF slot doesn't already exist
+    if (!saveAsPDFSlot) {
       // Create and insert <slot name="comment-save-as-pdf"></slot> after share slot
       const commentSaveAsPdfSlot = document.createElement('slot');
       commentSaveAsPdfSlot.setAttribute('name', 'comment-save-as-pdf');
-      parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling.nextSibling);
-  
+      parentElement.insertBefore(commentSaveAsPdfSlot, commentShareSlot.nextSibling);
+
       const shareButton = rootComment.querySelector(COMMENT_SHARE_BUTTON);
-      if (shareButton) {  
+      if (shareButton) {
+        // Find the actual <button> inside the shareButton's shadow root
+        const shareButtonElem = shareButton.shadowRoot.querySelector('button');
 
         // Create new button
         const saveAsPdfButton = document.createElement("button");
         saveAsPdfButton.textContent = "Save as PDF";
         saveAsPdfButton.id = "saveAsPdfButton";
-        saveAsPdfButton.slot = "comment-save-as-pdf"
-  
-        // Match styles by using share button and span styles
-        const shareButtonStyles = getComputedStyle(shareButton);
-        saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+        saveAsPdfButton.setAttribute("slot", "comment-save-as-pdf");
 
-        // Some styles are on the nested span
-        const shareButtonSpan = shareButton.shadowRoot.querySelector(COMMENT_SHARE_BUTTON_SPAN)
-        const shareButtonSpanStyles = getComputedStyle(shareButtonSpan);
-        saveAsPdfButton.style.color = shareButtonSpanStyles.color;
-
-        // Manually set some styles that aren't copied for some reason
-        saveAsPdfButton.style.paddingLeft = "10px"
-        saveAsPdfButton.style.paddingRight = "10px"
-
-        // Set hover state styles
-        saveAsPdfButton.addEventListener("mouseover", () => {
-          saveAsPdfButton.style.backgroundColor = "";
-          saveAsPdfButton.style.color = "";
-        });
-  
-        saveAsPdfButton.addEventListener("mouseout", () => {
-          saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-          saveAsPdfButton.style.color = shareButtonSpanStyles.color;
-        }); 
-  
-        // Insert "Save as PDF" to the right of "Share"
-        shareButton.parentNode.insertBefore(
-          saveAsPdfButton,
-          shareButton.nextSibling.nextSibling
-        );
+        // Copy classes and styles from the Share button for a perfect match
+        if (shareButtonElem) {
+          saveAsPdfButton.className = shareButtonElem.className;
+          saveAsPdfButton.style.cssText = shareButtonElem.style.cssText;
+        }
 
         // On click, retrieve text of the clicked comment
         saveAsPdfButton.addEventListener("click", () => {
@@ -209,11 +191,19 @@ function addSaveAsPdfButton(rootComment) {
           const permalink = rootComment.getAttribute('permalink');
           const fullURL = `https://www.reddit.com${permalink}`;
 
+          let commentContent = null;
           if (parentComment) {
-            var commentContent = parentComment.querySelector(COMMENT_TEXT);
+            commentContent = parentComment.querySelector(COMMENT_TEXT);
           }
-          handlePdfClick(commentContent, fullURL);
+          if (commentContent) {
+            handlePdfClick(commentContent, fullURL);
+          } else {
+            console.warn("Could not find comment content for PDF export.");
+          }
         });
+
+        // Append the button to the custom element (light DOM) for slot projection
+        rootComment.appendChild(saveAsPdfButton);
       }
     }
   }
