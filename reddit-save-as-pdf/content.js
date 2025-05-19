@@ -141,7 +141,7 @@ const COMMENT_SAVE_AS_PDF_SLOT = 'slot[name="comment-save-as-pdf"]';
 const COMMENT_SHARE_BUTTON = 'shreddit-comment-share-button';
 const COMMENT_SHARE_BUTTON_SPAN = 'button span:first-child span:last-child';
 
-const COMMENT_TEXT = '#-post-rtjson-content';
+const COMMENT_TEXT = '[id$="-comment-rtjson-content"]';
 
 // Finds all comments and triggers adding the Save as PDF button to each
 function getAllComments() {
@@ -173,69 +173,26 @@ function addSaveAsPdfButton(rootComment) {
         // Find the actual <button> inside the shareButton's shadow root
         const shareButtonElem = shareButton.shadowRoot.querySelector('button');
 
-        // Clone the button deeply (preserves styles and structure)
-        const saveAsPdfButton = shareButton.cloneNode(true);
+        // Create new button
+        const saveAsPdfButton = document.createElement("button");
+        saveAsPdfButton.textContent = "Save as PDF";
         saveAsPdfButton.id = "saveAsPdfButton";
         saveAsPdfButton.setAttribute("slot", "comment-save-as-pdf");
 
-        // Update text and click behavior
-        const spanText = saveAsPdfButton.querySelector('span span:last-child');
-        if (spanText) spanText.textContent = 'Save as PDF';
-
-        // Optionally change icon (optional)
-        const icon = saveAsPdfButton.querySelector('svg');
-        if (icon) icon.remove();
-
-
-        // On click, retrieve text of the clicked comment
-        saveAsPdfButton.addEventListener("click", (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          const parentComment = rootComment.parentElement;
-          const permalink = rootComment.getAttribute('permalink');
-          const fullURL = `https://www.reddit.com${permalink}`;
-
-          let commentContent = null;
-          if (parentComment) {
-            commentContent = parentComment.querySelector(COMMENT_TEXT);
-          }
-          if (commentContent) {
-            handlePdfClick(commentContent, fullURL);
-          } else {
-            console.warn("Could not find comment content for PDF export.");
-          }
-        });
-
-        // Insert it right after the Share button
-        shareButton.parentElement.appendChild(saveAsPdfButton);
-
-
-        // Create new button
-        // const saveAsPdfButton = document.createElement("button");
-        // saveAsPdfButton.textContent = "Save as PDF";
-
         // Copy classes and styles from the Share button for a perfect match
-        // if (shareButtonElem) {
-        //   // saveAsPdfButton.className = shareButtonElem.className;
-        //   saveAsPdfButton.style.cssText = shareButtonElem.style.cssText;
-        //   const shareButtonStyles = getComputedStyle(shareButton);
-        //   saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
-        // }
-
-        // // Replace this with how you get the shadow root — adjust as needed
-        // const dropdownMenu = document.querySelector('faceplate-dropdown-menu');
-        // const shadowRoot = dropdownMenu.shadowRoot || dropdownMenu;
-
-        // // Find the existing Share button
-        // const shareButton = shadowRoot.querySelector('button');
-
+        if (shareButtonElem) {
+          // saveAsPdfButton.className = shareButtonElem.className;
+          saveAsPdfButton.style.cssText = shareButtonElem.style.cssText;
+          saveAsPdfButton.style.color = shareButtonSpanStyles.color;
+          saveAsPdfButton.style.backgroundColor = shareButtonStyles.backgroundColor;
+        }
 
         // Match styles by using share button and span styles
+        // const shareButtonStyles = getComputedStyle(shareButton);
 
         // // Some styles are on the nested span
         // const shareButtonSpan = shareButton.shadowRoot.querySelector(COMMENT_SHARE_BUTTON_SPAN)
         // const shareButtonSpanStyles = getComputedStyle(shareButtonSpan);
-        // saveAsPdfButton.style.color = shareButtonSpanStyles.color;
 
         // // Manually set some styles that aren't copied for some reason
         // saveAsPdfButton.style.paddingLeft = "10px"
@@ -252,11 +209,25 @@ function addSaveAsPdfButton(rootComment) {
         //   saveAsPdfButton.style.color = shareButtonSpanStyles.color;
         // });
 
+        // On click, retrieve text of the clicked comment
+        saveAsPdfButton.addEventListener("click", () => {
+          const grandParentElement = rootComment.parentElement.parentElement;
+          const permalink = rootComment.getAttribute('permalink');
+          const fullURL = `https://www.reddit.com${permalink}`;
 
-
+          let commentContent = null;
+          if (grandParentElement) {
+            commentContent = grandParentElement.querySelector(COMMENT_TEXT);
+          }
+          if (commentContent) {
+            handlePdfClick(commentContent, fullURL);
+          } else {
+            console.warn("Could not find comment content for PDF export.");
+          }
+        });
 
         // Append the button to the custom element (light DOM) for slot projection
-        // rootComment.appendChild(saveAsPdfButton);
+        rootComment.appendChild(saveAsPdfButton);
       }
     }
   }
