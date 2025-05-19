@@ -8,10 +8,10 @@ function detectLoggedInStatus() {
   const headerUserDropdown = document.querySelector(HEADER_USER_DROPDOWN);
   if (headerUserDropdown) { // user is logged in
     getAllShareButtons();
-    setInterval(getAllShareButtons, 3000); // every 3s
+    setInterval(getAllShareButtons, 2000); // every 2s
   } else {
     getAllComments();
-    setInterval(getAllComments, 3000);
+    setInterval(getAllComments, 2000);
   }
 }
 
